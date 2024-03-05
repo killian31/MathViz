@@ -19,7 +19,12 @@ Run `streamlit run Home.py`
 ## Contribution
 
 We welcome contributions from the community!
-To add your app, add your file app in the folder `pages/`, named like `pages/Your_Page_Title.py`
+
+To add your app, add your file app in the folder `pages/`, named like `pages/Your_Page_Title.py`. Right after your imports, add the following line in your script:
+
+```python
+st.set_page_config(page_title="Your Page Title")
+```
 Then, in the `Home.py` file, add this below the right section:
 
 ```python
