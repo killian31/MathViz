@@ -22,3 +22,5 @@ if st.button("Norm Visualizer"):
     switch_page("Norm Visualizer")
 st.write("#### Statistics")
 st.write("#### Machine Learning")
+if st.button("Neural Network Separability"):
+    switch_page("Neural Network Separability")
