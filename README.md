@@ -1,5 +1,7 @@
 # Mathematics Explorer
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mathviz.streamlit.app)
+
 This app allows you to explore various mathematical/statistical concepts and
 visualizations, along with machine learning models and algorithms.
 
