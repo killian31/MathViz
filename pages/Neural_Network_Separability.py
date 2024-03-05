@@ -119,7 +119,7 @@ def plot_interactive_3d_latent_space(model, points, labels):
     # title
     fig.update_layout(title="3D Latent Space of the Neural Network")
     # augment size
-    fig.update_layout(width=750, height=750)
+    fig.update_layout(width=500, height=500)
 
     st.plotly_chart(fig)
 
@@ -206,7 +206,7 @@ model_3d = SimpleNN3D()
 epochs = st.slider("Number of epochs", 10, 300, 300, 10)
 optimizer = st.radio("Optimizer", ["adam", "sgd"])
 learning_rate = st.radio("Learning rate", [0.01, 0.001, 0.0001])
-batch_size = st.number_input("Batch size", 1, 64, 64, 8)
+batch_size = st.number_input("Batch size", 1, 64, 16, 8)
 if st.button("Train Network"):
     # Create a custom dataset
     custom_dataset = CustomDataset(points_inside, points_outside)
@@ -229,6 +229,8 @@ if st.button("Train Network"):
 
     # Training loop
     pbar = st.sidebar.progress(0)
+    st.write("#### Loss Progress")
+    chart = st.line_chart(losses, use_container_width=True)
     for epoch in range(epochs):
         model_3d.train()
         for inputs, labels in train_loader:
@@ -252,6 +254,8 @@ if st.button("Train Network"):
 
         # Store loss and update progress bar
         losses.append(loss.item())
+        last_rows = np.array(losses)
+        chart.line_chart(last_rows)
         pbar.progress((epoch + 1) / epochs)
     pbar.empty()
     st.write(f"Training complete!\nAccuracy: {accuracy:.2f}")
