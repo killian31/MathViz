@@ -12,6 +12,9 @@ def norm_Np(x, p):
 
 # Streamlit UI
 st.title("Np norm visualization in R2")
+st.markdown(
+    "This app visualizes the set $E = {x \\in \\mathbb{R}^2 : N_p(x) <= 1}$ for a given value of $p$, where $N_p(x) = (|x_1|^p + |x_2|^p)^(1/p)$."
+)
 
 # User input for p (slider)
 p = st.slider("Choose a value for p (between 0 and 10):", 0.1, 10.0, 2.0, 0.1)
