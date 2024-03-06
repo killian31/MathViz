@@ -15,7 +15,6 @@ import streamlit as st
 
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 
-
 problem_explanation = """
 
 In the context of Markov Decision Processes, the parking problem can be described as follows:
@@ -33,7 +32,8 @@ The reward function is defined as:
 - $r((i, F), \\text{stop}) = i$, indicating the reward for parking in slot $i$.
 - $r((i, F), \\text{continue}) = -c$, representing the choice to continue despite a free slot.
 - $r((i, T), \\text{continue}) = -c$, for continuing when encountering a taken slot.
-We use a constant $c \\in (0.5, 1)$ to represent the cost of continuing to search for a parking spot.
+
+We use a constant $c \\in \\mathbb{R_+}$ to represent the cost of continuing to search for a parking spot.
 
 ### Transition Probabilities
 The probability of moving to the next state, given the current state and action, is described by $\\mathbb{P}$:
@@ -78,10 +78,13 @@ $$
 V_{k+1}(s) = \\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} \\mathcal{P}(s' | s, a)V_k(s')\\}
 $$
 where $\\gamma$ is the discount factor. In this problem, we assume $\\gamma = 1$.
-- Alongside the value function, we concurrently develop an optimal policy $\pi^*$, signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes the expected utility based on the calculated value function, effectively guiding the decision-maker towards the optimal action at each slot.
+- Alongside the value function, we concurrently develop an optimal policy $\\pi^*$, 
+signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes
+the expected utility based on the calculated value function, effectively guiding the 
+decision-maker towards the optimal action at each slot.
 
 **Convergence**: This iterative process progresses until we reach the first slot, 
-culminating in a comprehensive policy $\pi^*$ that covers the entire parking lot. This
+culminating in a comprehensive policy $\\pi^*$ that covers the entire parking lot. This
 policy gives the optimal action (park or continue) for every slot, derives from
 maximizing the expected utility from that point forward.
 """
@@ -92,9 +95,12 @@ st.title("Parking Problem Solver")
 st.markdown(problem_explanation)
 
 
-# Initialize the parking lot with a given number of slots and probability of being taken
+# Initialize the parking lot with a given number of slots and proportion of being taken
 def initialize_parking_lot(N, p):
-    return np.random.choice(["F", "T"], size=N, p=[1 - p, p])
+    slots = ["F"] * N
+    for i in random.sample(range(N), int(p * N)):
+        slots[i] = "T"
+    return slots
 
 
 def rho(i, N, p_start=0.9, p_end=0.1):
@@ -179,7 +185,7 @@ reward_func = st.selectbox(
     ["i", "2i", "i^2"],
     format_func=lambda x: "Reward = " + x,
 )
-cost_of_continuing = st.slider("Cost of Continuing", 0.51, 1.0, 0.6, step=0.01)
+cost_of_continuing = st.slider("Cost of Continuing", 0.0, 10.0, 0.6, step=0.01)
 
 # parking_lot = initialize_parking_lot(N, p_start)  # if user forgets
 
@@ -215,7 +221,6 @@ if st.button("Solve Parking Problem"):
 ''')
 
 
-
 problem_explanation = """
 
 In the context of Markov Decision Processes, the parking problem can be described as follows:
@@ -233,7 +238,8 @@ The reward function is defined as:
 - $r((i, F), \\text{stop}) = i$, indicating the reward for parking in slot $i$.
 - $r((i, F), \\text{continue}) = -c$, representing the choice to continue despite a free slot.
 - $r((i, T), \\text{continue}) = -c$, for continuing when encountering a taken slot.
-We use a constant $c \\in (0.5, 1)$ to represent the cost of continuing to search for a parking spot.
+
+We use a constant $c \\in \\mathbb{R_+}$ to represent the cost of continuing to search for a parking spot.
 
 ### Transition Probabilities
 The probability of moving to the next state, given the current state and action, is described by $\\mathbb{P}$:
@@ -278,10 +284,13 @@ $$
 V_{k+1}(s) = \\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} \\mathcal{P}(s' | s, a)V_k(s')\\}
 $$
 where $\\gamma$ is the discount factor. In this problem, we assume $\\gamma = 1$.
-- Alongside the value function, we concurrently develop an optimal policy $\pi^*$, signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes the expected utility based on the calculated value function, effectively guiding the decision-maker towards the optimal action at each slot.
+- Alongside the value function, we concurrently develop an optimal policy $\\pi^*$, 
+signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes
+the expected utility based on the calculated value function, effectively guiding the 
+decision-maker towards the optimal action at each slot.
 
 **Convergence**: This iterative process progresses until we reach the first slot, 
-culminating in a comprehensive policy $\pi^*$ that covers the entire parking lot. This
+culminating in a comprehensive policy $\\pi^*$ that covers the entire parking lot. This
 policy gives the optimal action (park or continue) for every slot, derives from
 maximizing the expected utility from that point forward.
 """
@@ -292,9 +301,12 @@ st.title("Parking Problem Solver")
 st.markdown(problem_explanation)
 
 
-# Initialize the parking lot with a given number of slots and probability of being taken
+# Initialize the parking lot with a given number of slots and proportion of being taken
 def initialize_parking_lot(N, p):
-    return np.random.choice(["F", "T"], size=N, p=[1 - p, p])
+    slots = ["F"] * N
+    for i in random.sample(range(N), int(p * N)):
+        slots[i] = "T"
+    return slots
 
 
 def rho(i, N, p_start=0.9, p_end=0.1):
@@ -379,7 +391,7 @@ reward_func = st.selectbox(
     ["i", "2i", "i^2"],
     format_func=lambda x: "Reward = " + x,
 )
-cost_of_continuing = st.slider("Cost of Continuing", 0.51, 1.0, 0.6, step=0.01)
+cost_of_continuing = st.slider("Cost of Continuing", 0.0, 10.0, 0.6, step=0.01)
 
 # parking_lot = initialize_parking_lot(N, p_start)  # if user forgets
 
