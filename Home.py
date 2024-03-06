@@ -4,11 +4,11 @@ from utils import switch_page
 
 st.set_page_config(
     page_title="Mathematics & Machine Learning Explorer",
-    page_icon="👋",
+    page_icon="📚",
     initial_sidebar_state="collapsed",
 )
 
-st.write("# Welcome! 👋")
+st.write("# Welcome to the Mathematics & Machine Learning Explorer!")
 
 st.markdown(
     """
@@ -20,6 +20,8 @@ st.markdown(
 st.write("##### Mathematics")
 if st.button("Norm Visualizer"):
     switch_page("Norm Visualizer")
+if st.button("Parking Problem Solver (MDP)"):
+    switch_page("Parking Problem Solver")
 st.write("##### Statistics")
 st.write("##### Machine Learning")
 if st.button("Neural Network Separability"):
