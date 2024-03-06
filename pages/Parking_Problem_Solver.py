@@ -15,6 +15,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 
+
 problem_explanation = """
 
 In the context of Markov Decision Processes, the parking problem can be described as follows:
@@ -47,39 +48,44 @@ The value function $V$ for the states is defined as:
 
 The objective is to determine the optimal policy: when to park immediately and when to continue searching for a closer slot.
 
-### Solution Approach
+### Analytical solution using backward induction
 
-To solve this problem, we propose using the Value 
-Iteration algorithm, to find the optimal policy $\\pi^*$ that maximizes the expected 
-reward. The value function $V(s)$ represents the maximum expected reward that can be 
-obtained from state $s$. The algorithm iterates over all states, updating the value 
-function based on the expected rewards of taking each possible action and transitioning
-to subsequent states until the value function converges.
+The parking problem, formulated within the framework of Markov Decision Processes, finds
+a practical solution through backward induction. 
 
-The optimal policy $\\pi^*(s)$ at each state $s$ is then determined by choosing the 
-action that maximizes the expected reward given the current value function.
+**Initialization**: We commence with a value function $V$ initialized for all slots, 
+extending to $N+1$ to account for a hypothetical state beyond the last parking slot. 
+This state acts as a boundary condition with $V[N+1]=0$.
 
+**Backward Induction Process**:
+- Iteratively, for each slot $i$ from $N$ down to $1$, we evaluate the decision-making 
+process under the assumption that the decision-maker is equipped with the knowledge of 
+all subsequent outcomes. This reverse evaluation is essential for incorporating the 
+future impacts of present decisions.
+- For each free slot $(i, F)$, we compute the decision to either park or continue. The 
+computation involves a comparison between the immediate reward of parking, $i$, and the 
+expected utility of continuing, which is a function of the value function of the 
+subsequent slot $V[i+1]$ and the cost of continuing $c$. The probability $\\rho(i)$ that
+influences the transition to subsequent states adjusts dynamically with $i$, reflecting
+the linear decrease in the probability of finding a free slot.
+- For occupied slots $(i, T)$, the utility is derived from the value
+function of the subsequent slot minus the cost of continuing, as parking is not an 
+option.
 
-### Analytical Solution
-**Initialization**: Start with an arbitrary value function $V_0$ and an empty policy $\\pi$.
-
-**Value Iteration**: For each state $s \\in \\mathcal{S}$ in the state space $E$, update the value function
-based on the expected reward of taking each possible action $a \\in \\mathcal{A}(s)$ and
-transitioning to the next state $s' \\in \\mathcal{S}$. This involves calculating the 
-expected reward for each action and choosing the maximum.
-
+**Recursion and Policy Determination**: The core of this process is encapsulated in the
+recursion formula:
 $$
 V_{k+1}(s) = \\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} \\mathcal{P}(s' | s, a)V_k(s')\\}
-$$ 
+$$
 where $\\gamma$ is the discount factor. In this problem, we assume $\\gamma = 1$.
+- Alongside the value function, we concurrently develop an optimal policy $\pi^*$, signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes the expected utility based on the calculated value function, effectively guiding the decision-maker towards the optimal action at each slot.
 
-**Policy Extraction**: After the value function converges, the optimal policy 
-$\\pi^*(s)$ at each state $s$ is determined by choosing the action that maximizes the expected reward given the current value function.
-
-$$
-\\pi^*(s) = \\arg\\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} \\mathcal{P}(s' | s, a)V(s')\\}
-$$
+**Convergence**: This iterative process progresses until we reach the first slot, 
+culminating in a comprehensive policy $\pi^*$ that covers the entire parking lot. This
+policy gives the optimal action (park or continue) for every slot, derives from
+maximizing the expected utility from that point forward.
 """
+
 st.title("Parking Problem Solver")
 
 # Display the problem explanation
@@ -97,7 +103,9 @@ def rho(i, N, p_start=0.9, p_end=0.1):
 
 
 # Compute the optimal policy using value iteration
-def value_iteration(parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1):
+def value_iteration(
+    parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1, reward_func="i"
+):
     N = len(parking_lot)
     V = np.zeros(N + 1)  # End of lot has value 0
     policy = np.zeros(N, dtype=int)  # Initialize policy: 0 for continue, 1 for park
@@ -112,7 +120,14 @@ def value_iteration(parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1):
                 )
             else:
                 continue_value = 0  # Can't continue from the last slot
-            park_value = i + 1  # Reward for parking now
+            if reward_func == "i":
+                park_value = i + 1  # Reward for parking now
+            elif reward_func == "2i":
+                park_value = 2 * (i + 1)
+            elif reward_func == "i^2":
+                park_value = (i + 1) ** 2
+            else:
+                raise ValueError("Invalid reward function")
             V[i] = max(park_value, continue_value - cost_of_continuing)
             policy[i] = park_value >= (continue_value - cost_of_continuing)
         else:
@@ -159,6 +174,11 @@ N = st.slider("Number of Parking Slots", 1, 100, 20)
 O = st.slider("Proportion of Taken Slots", 0.0, 1.0, 0.1, step=0.01)
 p_start = st.slider("Initial Probability of Free Slot", 0.0, 1.0, 0.9)
 p_end = st.slider("Final Probability of Free Slot", 0.0, p_start, 0.1)
+reward_func = st.selectbox(
+    "Reward Function",
+    ["i", "2i", "i^2"],
+    format_func=lambda x: "Reward = " + x,
+)
 cost_of_continuing = st.slider("Cost of Continuing", 0.51, 1.0, 0.6, step=0.01)
 
 # parking_lot = initialize_parking_lot(N, p_start)  # if user forgets
@@ -189,12 +209,13 @@ if st.button("Solve Parking Problem"):
         st.error("Please generate a parking lot first.")
         st.stop()
     policy = value_iteration(
-        st.session_state.parking_lot, cost_of_continuing, p_start, p_end
+        st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
     )
     plot_parking_lot(st.session_state.parking_lot, policy)
 ''')
 
 
+
 problem_explanation = """
 
 In the context of Markov Decision Processes, the parking problem can be described as follows:
@@ -227,39 +248,44 @@ The value function $V$ for the states is defined as:
 
 The objective is to determine the optimal policy: when to park immediately and when to continue searching for a closer slot.
 
-### Solution Approach
+### Analytical solution using backward induction
 
-To solve this problem, we propose using the Value 
-Iteration algorithm, to find the optimal policy $\\pi^*$ that maximizes the expected 
-reward. The value function $V(s)$ represents the maximum expected reward that can be 
-obtained from state $s$. The algorithm iterates over all states, updating the value 
-function based on the expected rewards of taking each possible action and transitioning
-to subsequent states until the value function converges.
+The parking problem, formulated within the framework of Markov Decision Processes, finds
+a practical solution through backward induction. 
 
-The optimal policy $\\pi^*(s)$ at each state $s$ is then determined by choosing the 
-action that maximizes the expected reward given the current value function.
+**Initialization**: We commence with a value function $V$ initialized for all slots, 
+extending to $N+1$ to account for a hypothetical state beyond the last parking slot. 
+This state acts as a boundary condition with $V[N+1]=0$.
 
+**Backward Induction Process**:
+- Iteratively, for each slot $i$ from $N$ down to $1$, we evaluate the decision-making 
+process under the assumption that the decision-maker is equipped with the knowledge of 
+all subsequent outcomes. This reverse evaluation is essential for incorporating the 
+future impacts of present decisions.
+- For each free slot $(i, F)$, we compute the decision to either park or continue. The 
+computation involves a comparison between the immediate reward of parking, $i$, and the 
+expected utility of continuing, which is a function of the value function of the 
+subsequent slot $V[i+1]$ and the cost of continuing $c$. The probability $\\rho(i)$ that
+influences the transition to subsequent states adjusts dynamically with $i$, reflecting
+the linear decrease in the probability of finding a free slot.
+- For occupied slots $(i, T)$, the utility is derived from the value
+function of the subsequent slot minus the cost of continuing, as parking is not an 
+option.
 
-### Analytical Solution
-**Initialization**: Start with an arbitrary value function $V_0$ and an empty policy $\\pi$.
-
-**Value Iteration**: For each state $s \\in \\mathcal{S}$ in the state space $E$, update the value function
-based on the expected reward of taking each possible action $a \\in \\mathcal{A}(s)$ and
-transitioning to the next state $s' \\in \\mathcal{S}$. This involves calculating the 
-expected reward for each action and choosing the maximum.
-
+**Recursion and Policy Determination**: The core of this process is encapsulated in the
+recursion formula:
 $$
 V_{k+1}(s) = \\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} \\mathcal{P}(s' | s, a)V_k(s')\\}
-$$ 
+$$
 where $\\gamma$ is the discount factor. In this problem, we assume $\\gamma = 1$.
+- Alongside the value function, we concurrently develop an optimal policy $\pi^*$, signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes the expected utility based on the calculated value function, effectively guiding the decision-maker towards the optimal action at each slot.
 
-**Policy Extraction**: After the value function converges, the optimal policy 
-$\\pi^*(s)$ at each state $s$ is determined by choosing the action that maximizes the expected reward given the current value function.
-
-$$
-\\pi^*(s) = \\arg\\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} \\mathcal{P}(s' | s, a)V(s')\\}
-$$
+**Convergence**: This iterative process progresses until we reach the first slot, 
+culminating in a comprehensive policy $\pi^*$ that covers the entire parking lot. This
+policy gives the optimal action (park or continue) for every slot, derives from
+maximizing the expected utility from that point forward.
 """
+
 st.title("Parking Problem Solver")
 
 # Display the problem explanation
@@ -277,7 +303,9 @@ def rho(i, N, p_start=0.9, p_end=0.1):
 
 
 # Compute the optimal policy using value iteration
-def value_iteration(parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1):
+def value_iteration(
+    parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1, reward_func="i"
+):
     N = len(parking_lot)
     V = np.zeros(N + 1)  # End of lot has value 0
     policy = np.zeros(N, dtype=int)  # Initialize policy: 0 for continue, 1 for park
@@ -292,7 +320,14 @@ def value_iteration(parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1):
                 )
             else:
                 continue_value = 0  # Can't continue from the last slot
-            park_value = i + 1  # Reward for parking now
+            if reward_func == "i":
+                park_value = i + 1  # Reward for parking now
+            elif reward_func == "2i":
+                park_value = 2 * (i + 1)
+            elif reward_func == "i^2":
+                park_value = (i + 1) ** 2
+            else:
+                raise ValueError("Invalid reward function")
             V[i] = max(park_value, continue_value - cost_of_continuing)
             policy[i] = park_value >= (continue_value - cost_of_continuing)
         else:
@@ -339,6 +374,11 @@ N = st.slider("Number of Parking Slots", 1, 100, 20)
 O = st.slider("Proportion of Taken Slots", 0.0, 1.0, 0.1, step=0.01)
 p_start = st.slider("Initial Probability of Free Slot", 0.0, 1.0, 0.9)
 p_end = st.slider("Final Probability of Free Slot", 0.0, p_start, 0.1)
+reward_func = st.selectbox(
+    "Reward Function",
+    ["i", "2i", "i^2"],
+    format_func=lambda x: "Reward = " + x,
+)
 cost_of_continuing = st.slider("Cost of Continuing", 0.51, 1.0, 0.6, step=0.01)
 
 # parking_lot = initialize_parking_lot(N, p_start)  # if user forgets
@@ -369,6 +409,6 @@ if st.button("Solve Parking Problem"):
         st.error("Please generate a parking lot first.")
         st.stop()
     policy = value_iteration(
-        st.session_state.parking_lot, cost_of_continuing, p_start, p_end
+        st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
     )
     plot_parking_lot(st.session_state.parking_lot, policy)
