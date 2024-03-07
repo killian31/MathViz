@@ -6,8 +6,9 @@ import streamlit as st
 
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 # This is automatically generated, do not modify
-if st.button('Show code'):
-    st.code('''import random
+if st.button("Show code"):
+    st.code(
+        '''import random
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -210,10 +211,9 @@ if st.button("Solve Parking Problem"):
     values, policy = backward_induction(
         N, cost_of_continuing, p_start, p_end, reward_func
     )
-    st.write("Values:", values)
     plot_parking_lot(st.session_state.parking_lot, policy)
-''')
-
+'''
+    )
 
 
 problem_explanation = """
@@ -410,5 +410,4 @@ if st.button("Solve Parking Problem"):
     values, policy = backward_induction(
         N, cost_of_continuing, p_start, p_end, reward_func
     )
-    st.write("Values:", values)
     plot_parking_lot(st.session_state.parking_lot, policy)
