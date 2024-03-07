@@ -105,7 +105,7 @@ def initialize_parking_lot(N, p):
 
 def rho(i, N, p_start=0.9, p_end=0.1):
     """Linearly decreasing probability of a slot being free."""
-    return p_start - (i / N) * (p_start - p_end)
+    return p_start - ((i - 1) / (N - 1)) * (p_start - p_end)
 
 
 # Compute the optimal policy using value iteration
@@ -143,7 +143,40 @@ def value_iteration(
     return policy
 
 
-# Function to plot the parking lot and policy
+def backward_induction(N, c, p_start=0.9, p_end=0.1, reward_func="i"):
+    V_free = np.zeros(N + 1)  # Value when the slot is free
+    V_taken = np.zeros(N + 1)  # Value when the slot is taken
+    policy = [None] * N  # Optimal action for each slot
+
+    # Boundary conditions
+    V_free[N] = N  # Value of parking in the last free slot
+    V_taken[N] = 0  # Value of the last slot being taken
+
+    for i in range(N - 1, -1, -1):
+        prob_free_next = rho(i + 1, N, p_start, p_end)
+
+        V_continue = (
+            -c + prob_free_next * V_free[i + 1] + (1 - prob_free_next) * V_taken[i + 1]
+        )
+        if reward_func == "i":
+            V_park = i + 1
+        elif reward_func == "2i":
+            V_park = 2 * (i + 1)
+        elif reward_func == "i^2":
+            V_park = (i + 1) ** 2
+        else:
+            raise ValueError("Invalid reward function")
+
+        V_free[i] = max(V_park, V_continue)
+        policy[i] = 1 if V_park >= V_continue else 0
+
+        V_taken[i] = (
+            -c + prob_free_next * V_free[i + 1] + (1 - prob_free_next) * V_taken[i + 1]
+        )
+
+    return V_free[:-1], policy
+
+
 def plot_parking_lot(parking_lot, policy):
     fig, ax = plt.subplots(figsize=(10, 2))
     N = len(parking_lot)
@@ -154,7 +187,6 @@ def plot_parking_lot(parking_lot, policy):
         edgecolor="black",
     )
     ax.set_xticks(range(N))
-    # the x labels should have only one "Park" -Value and "" after the first "Park" -Value, and "Continue" -Value before the first "Park" -Value
     x_labels = []
     first_park_index = 0
     for i in range(N):
@@ -187,8 +219,6 @@ reward_func = st.selectbox(
 )
 cost_of_continuing = st.slider("Cost of Continuing", 0.0, 10.0, 0.6, step=0.01)
 
-# parking_lot = initialize_parking_lot(N, p_start)  # if user forgets
-
 if st.button("Generate Random Parking Lot"):
     parking_lot = initialize_parking_lot(N, O)
     # save the parking_lot in the session state
@@ -214,9 +244,13 @@ if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
         st.error("Please generate a parking lot first.")
         st.stop()
-    policy = value_iteration(
-        st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
+    # policy = value_iteration(
+    #    st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
+    # )
+    values, policy = backward_induction(
+        N, cost_of_continuing, p_start, p_end, reward_func
     )
+    st.write("Values:", values)
     plot_parking_lot(st.session_state.parking_lot, policy)
 ''')
 
@@ -311,7 +345,7 @@ def initialize_parking_lot(N, p):
 
 def rho(i, N, p_start=0.9, p_end=0.1):
     """Linearly decreasing probability of a slot being free."""
-    return p_start - (i / N) * (p_start - p_end)
+    return p_start - ((i - 1) / (N - 1)) * (p_start - p_end)
 
 
 # Compute the optimal policy using value iteration
@@ -349,7 +383,40 @@ def value_iteration(
     return policy
 
 
-# Function to plot the parking lot and policy
+def backward_induction(N, c, p_start=0.9, p_end=0.1, reward_func="i"):
+    V_free = np.zeros(N + 1)  # Value when the slot is free
+    V_taken = np.zeros(N + 1)  # Value when the slot is taken
+    policy = [None] * N  # Optimal action for each slot
+
+    # Boundary conditions
+    V_free[N] = N  # Value of parking in the last free slot
+    V_taken[N] = 0  # Value of the last slot being taken
+
+    for i in range(N - 1, -1, -1):
+        prob_free_next = rho(i + 1, N, p_start, p_end)
+
+        V_continue = (
+            -c + prob_free_next * V_free[i + 1] + (1 - prob_free_next) * V_taken[i + 1]
+        )
+        if reward_func == "i":
+            V_park = i + 1
+        elif reward_func == "2i":
+            V_park = 2 * (i + 1)
+        elif reward_func == "i^2":
+            V_park = (i + 1) ** 2
+        else:
+            raise ValueError("Invalid reward function")
+
+        V_free[i] = max(V_park, V_continue)
+        policy[i] = 1 if V_park >= V_continue else 0
+
+        V_taken[i] = (
+            -c + prob_free_next * V_free[i + 1] + (1 - prob_free_next) * V_taken[i + 1]
+        )
+
+    return V_free[:-1], policy
+
+
 def plot_parking_lot(parking_lot, policy):
     fig, ax = plt.subplots(figsize=(10, 2))
     N = len(parking_lot)
@@ -360,7 +427,6 @@ def plot_parking_lot(parking_lot, policy):
         edgecolor="black",
     )
     ax.set_xticks(range(N))
-    # the x labels should have only one "Park" -Value and "" after the first "Park" -Value, and "Continue" -Value before the first "Park" -Value
     x_labels = []
     first_park_index = 0
     for i in range(N):
@@ -393,8 +459,6 @@ reward_func = st.selectbox(
 )
 cost_of_continuing = st.slider("Cost of Continuing", 0.0, 10.0, 0.6, step=0.01)
 
-# parking_lot = initialize_parking_lot(N, p_start)  # if user forgets
-
 if st.button("Generate Random Parking Lot"):
     parking_lot = initialize_parking_lot(N, O)
     # save the parking_lot in the session state
@@ -420,7 +484,11 @@ if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
         st.error("Please generate a parking lot first.")
         st.stop()
-    policy = value_iteration(
-        st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
+    # policy = value_iteration(
+    #    st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
+    # )
+    values, policy = backward_induction(
+        N, cost_of_continuing, p_start, p_end, reward_func
     )
+    st.write("Values:", values)
     plot_parking_lot(st.session_state.parking_lot, policy)
