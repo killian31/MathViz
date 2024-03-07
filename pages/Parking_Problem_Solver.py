@@ -6,9 +6,8 @@ import streamlit as st
 
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 # This is automatically generated, do not modify
-if st.button("Show code"):
-    st.code(
-        '''import random
+if st.button('Show code'):
+    st.code('''import random
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -55,24 +54,24 @@ The objective is to determine the optimal policy: when to park immediately and w
 The parking problem, formulated within the framework of Markov Decision Processes, finds
 a practical solution through backward induction. 
 
-**Initialization**: We commence with a value function $V$ initialized for all slots, 
+**Initialization**: We start with a value function $V$ initialized for all slots, 
 extending to $N+1$ to account for a hypothetical state beyond the last parking slot. 
 This state acts as a boundary condition with $V[N+1]=0$.
 
+
 **Backward Induction Process**:
-- Iteratively, for each slot $i$ from $N$ down to $1$, we evaluate the decision-making 
-process under the assumption that the decision-maker is equipped with the knowledge of 
-all subsequent outcomes. This reverse evaluation is essential for incorporating the 
-future impacts of present decisions.
-- For each free slot $(i, F)$, we compute the decision to either park or continue. The 
-computation involves a comparison between the immediate reward of parking, $i$, and the 
+The iterative process is as follows:
+1. For each slot $i$ from $N$ down to $1$, we evaluate the decision-making process under
+the assumption that the decision-maker is equipped with the knowledge of all subsequent
+outcomes. This reverse evaluation is essential for incorporating the future impacts of
+present decisions.
+2. For each free slot $(i, F)$, we compute the decision to either park or continue. The
+computation involves a comparison between the immediate reward of parking, $i$, and the
 expected utility of continuing, which is a function of the value function of the 
-subsequent slot $V[i+1]$ and the cost of continuing $c$. The probability $\\rho(i)$ that
-influences the transition to subsequent states adjusts dynamically with $i$, reflecting
-the linear decrease in the probability of finding a free slot.
-- For occupied slots $(i, T)$, the utility is derived from the value
-function of the subsequent slot minus the cost of continuing, as parking is not an 
-option.
+subsequent slot $V[i+1]$ and the cost of continuing $c$. The probability $\\rho(i)$ 
+that influences the transition to subsequent states adjusts dynamically with $i$.
+3. For occupied slots $(i, T)$, the utility is derived from the value function of the
+subsequent slot minus the cost of continuing, as parking is not an option.
 
 **Recursion and Policy Determination**: The core of this process is encapsulated in the
 recursion formula:
@@ -81,11 +80,11 @@ V_{k+1}(s) = \\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\su
 $$
 where $\\gamma$ is the discount factor. In this problem, we assume $\\gamma = 1$.
 - Alongside the value function, we concurrently develop an optimal policy $\\pi^*$, 
-signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes
+signifying at each slot whether to park or continue. This decision maximizes
 the expected utility based on the calculated value function, effectively guiding the 
 decision-maker towards the optimal action at each slot.
 
-**Convergence**: This iterative process progresses until we reach the first slot, 
+**Convergence**: This iterative process progresses until we reach the first slot,
 culminating in a comprehensive policy $\\pi^*$ that covers the entire parking lot. This
 policy gives the optimal action (park or continue) for every slot, derives from
 maximizing the expected utility from that point forward.
@@ -212,8 +211,8 @@ if st.button("Solve Parking Problem"):
         N, cost_of_continuing, p_start, p_end, reward_func
     )
     plot_parking_lot(st.session_state.parking_lot, policy)
-'''
-    )
+''')
+
 
 
 problem_explanation = """
@@ -254,24 +253,24 @@ The objective is to determine the optimal policy: when to park immediately and w
 The parking problem, formulated within the framework of Markov Decision Processes, finds
 a practical solution through backward induction. 
 
-**Initialization**: We commence with a value function $V$ initialized for all slots, 
+**Initialization**: We start with a value function $V$ initialized for all slots, 
 extending to $N+1$ to account for a hypothetical state beyond the last parking slot. 
 This state acts as a boundary condition with $V[N+1]=0$.
 
+
 **Backward Induction Process**:
-- Iteratively, for each slot $i$ from $N$ down to $1$, we evaluate the decision-making 
-process under the assumption that the decision-maker is equipped with the knowledge of 
-all subsequent outcomes. This reverse evaluation is essential for incorporating the 
-future impacts of present decisions.
-- For each free slot $(i, F)$, we compute the decision to either park or continue. The 
-computation involves a comparison between the immediate reward of parking, $i$, and the 
+The iterative process is as follows:
+1. For each slot $i$ from $N$ down to $1$, we evaluate the decision-making process under
+the assumption that the decision-maker is equipped with the knowledge of all subsequent
+outcomes. This reverse evaluation is essential for incorporating the future impacts of
+present decisions.
+2. For each free slot $(i, F)$, we compute the decision to either park or continue. The
+computation involves a comparison between the immediate reward of parking, $i$, and the
 expected utility of continuing, which is a function of the value function of the 
-subsequent slot $V[i+1]$ and the cost of continuing $c$. The probability $\\rho(i)$ that
-influences the transition to subsequent states adjusts dynamically with $i$, reflecting
-the linear decrease in the probability of finding a free slot.
-- For occupied slots $(i, T)$, the utility is derived from the value
-function of the subsequent slot minus the cost of continuing, as parking is not an 
-option.
+subsequent slot $V[i+1]$ and the cost of continuing $c$. The probability $\\rho(i)$ 
+that influences the transition to subsequent states adjusts dynamically with $i$.
+3. For occupied slots $(i, T)$, the utility is derived from the value function of the
+subsequent slot minus the cost of continuing, as parking is not an option.
 
 **Recursion and Policy Determination**: The core of this process is encapsulated in the
 recursion formula:
@@ -280,11 +279,11 @@ V_{k+1}(s) = \\max_{a \\in \\mathcal{A}(s)} \\{\\mathcal{R}(s, a) + \\gamma \\su
 $$
 where $\\gamma$ is the discount factor. In this problem, we assume $\\gamma = 1$.
 - Alongside the value function, we concurrently develop an optimal policy $\\pi^*$, 
-signifying at each slot whether to park $(1)$ or continue $(0)$. This decision maximizes
+signifying at each slot whether to park or continue. This decision maximizes
 the expected utility based on the calculated value function, effectively guiding the 
 decision-maker towards the optimal action at each slot.
 
-**Convergence**: This iterative process progresses until we reach the first slot, 
+**Convergence**: This iterative process progresses until we reach the first slot,
 culminating in a comprehensive policy $\\pi^*$ that covers the entire parking lot. This
 policy gives the optimal action (park or continue) for every slot, derives from
 maximizing the expected utility from that point forward.
