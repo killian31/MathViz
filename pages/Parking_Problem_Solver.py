@@ -15,6 +15,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 
+
 problem_explanation = """
 
 In the context of Markov Decision Processes, the parking problem can be described as follows:
@@ -91,11 +92,9 @@ maximizing the expected utility from that point forward.
 
 st.title("Parking Problem Solver")
 
-# Display the problem explanation
 st.markdown(problem_explanation)
 
 
-# Initialize the parking lot with a given number of slots and proportion of being taken
 def initialize_parking_lot(N, p):
     slots = ["F"] * N
     for i in random.sample(range(N), int(p * N)):
@@ -108,49 +107,13 @@ def rho(i, N, p_start=0.9, p_end=0.1):
     return p_start - ((i - 1) / (N - 1)) * (p_start - p_end)
 
 
-# Compute the optimal policy using value iteration
-def value_iteration(
-    parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1, reward_func="i"
-):
-    N = len(parking_lot)
-    V = np.zeros(N + 1)  # End of lot has value 0
-    policy = np.zeros(N, dtype=int)  # Initialize policy: 0 for continue, 1 for park
-
-    for i in range(N - 1, -1, -1):
-        if parking_lot[i] == "F":
-            # Calculate the expected value of continuing
-            if i < N - 1:  # If not at the last slot
-                rho_i = rho(i, N, p_start, p_end)
-                continue_value = rho_i * V[i + 1] + (1 - rho_i) * (
-                    V[i + 1] - cost_of_continuing
-                )
-            else:
-                continue_value = 0  # Can't continue from the last slot
-            if reward_func == "i":
-                park_value = i + 1  # Reward for parking now
-            elif reward_func == "2i":
-                park_value = 2 * (i + 1)
-            elif reward_func == "i^2":
-                park_value = (i + 1) ** 2
-            else:
-                raise ValueError("Invalid reward function")
-            V[i] = max(park_value, continue_value - cost_of_continuing)
-            policy[i] = park_value >= (continue_value - cost_of_continuing)
-        else:
-            V[i] = V[i + 1] - cost_of_continuing  # Adjust for the cost of continuing
-            policy[i] = 0
-
-    return policy
-
-
 def backward_induction(N, c, p_start=0.9, p_end=0.1, reward_func="i"):
-    V_free = np.zeros(N + 1)  # Value when the slot is free
-    V_taken = np.zeros(N + 1)  # Value when the slot is taken
-    policy = [None] * N  # Optimal action for each slot
+    V_free = np.zeros(N + 1)
+    V_taken = np.zeros(N + 1)
+    policy = [None] * N
 
-    # Boundary conditions
-    V_free[N] = N  # Value of parking in the last free slot
-    V_taken[N] = 0  # Value of the last slot being taken
+    V_free[N] = N
+    V_taken[N] = 0
 
     for i in range(N - 1, -1, -1):
         prob_free_next = rho(i + 1, N, p_start, p_end)
@@ -244,9 +207,6 @@ if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
         st.error("Please generate a parking lot first.")
         st.stop()
-    # policy = value_iteration(
-    #    st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
-    # )
     values, policy = backward_induction(
         N, cost_of_continuing, p_start, p_end, reward_func
     )
@@ -255,6 +215,7 @@ if st.button("Solve Parking Problem"):
 ''')
 
 
+
 problem_explanation = """
 
 In the context of Markov Decision Processes, the parking problem can be described as follows:
@@ -331,11 +292,9 @@ maximizing the expected utility from that point forward.
 
 st.title("Parking Problem Solver")
 
-# Display the problem explanation
 st.markdown(problem_explanation)
 
 
-# Initialize the parking lot with a given number of slots and proportion of being taken
 def initialize_parking_lot(N, p):
     slots = ["F"] * N
     for i in random.sample(range(N), int(p * N)):
@@ -348,49 +307,13 @@ def rho(i, N, p_start=0.9, p_end=0.1):
     return p_start - ((i - 1) / (N - 1)) * (p_start - p_end)
 
 
-# Compute the optimal policy using value iteration
-def value_iteration(
-    parking_lot, cost_of_continuing, p_start=0.9, p_end=0.1, reward_func="i"
-):
-    N = len(parking_lot)
-    V = np.zeros(N + 1)  # End of lot has value 0
-    policy = np.zeros(N, dtype=int)  # Initialize policy: 0 for continue, 1 for park
-
-    for i in range(N - 1, -1, -1):
-        if parking_lot[i] == "F":
-            # Calculate the expected value of continuing
-            if i < N - 1:  # If not at the last slot
-                rho_i = rho(i, N, p_start, p_end)
-                continue_value = rho_i * V[i + 1] + (1 - rho_i) * (
-                    V[i + 1] - cost_of_continuing
-                )
-            else:
-                continue_value = 0  # Can't continue from the last slot
-            if reward_func == "i":
-                park_value = i + 1  # Reward for parking now
-            elif reward_func == "2i":
-                park_value = 2 * (i + 1)
-            elif reward_func == "i^2":
-                park_value = (i + 1) ** 2
-            else:
-                raise ValueError("Invalid reward function")
-            V[i] = max(park_value, continue_value - cost_of_continuing)
-            policy[i] = park_value >= (continue_value - cost_of_continuing)
-        else:
-            V[i] = V[i + 1] - cost_of_continuing  # Adjust for the cost of continuing
-            policy[i] = 0
-
-    return policy
-
-
 def backward_induction(N, c, p_start=0.9, p_end=0.1, reward_func="i"):
-    V_free = np.zeros(N + 1)  # Value when the slot is free
-    V_taken = np.zeros(N + 1)  # Value when the slot is taken
-    policy = [None] * N  # Optimal action for each slot
+    V_free = np.zeros(N + 1)
+    V_taken = np.zeros(N + 1)
+    policy = [None] * N
 
-    # Boundary conditions
-    V_free[N] = N  # Value of parking in the last free slot
-    V_taken[N] = 0  # Value of the last slot being taken
+    V_free[N] = N
+    V_taken[N] = 0
 
     for i in range(N - 1, -1, -1):
         prob_free_next = rho(i + 1, N, p_start, p_end)
@@ -484,9 +407,6 @@ if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
         st.error("Please generate a parking lot first.")
         st.stop()
-    # policy = value_iteration(
-    #    st.session_state.parking_lot, cost_of_continuing, p_start, p_end, reward_func
-    # )
     values, policy = backward_induction(
         N, cost_of_continuing, p_start, p_end, reward_func
     )
