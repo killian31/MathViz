@@ -213,8 +213,11 @@ st.scatter_chart(df, x="x1", y="x2", color="label")
 
 st.write("## Neural Network")
 st.write(
-    """We will use a simple neural network with 1 hidden layer to separate the
-        points."""
+    """We will use a simple neural network with 3 hidden layer to separate the
+        points. The first hidden layer has 10 hidden units, the second hidden layer has
+        10 hidden units, and the third hidden layer has 3 hidden units. The third hidden
+        layer is the latent space of the network, and we will visualize it in 3D to see
+        how the network separates the points."""
 )
 model_3d = SimpleNN3D()
 
@@ -273,11 +276,20 @@ if st.button("Train Network"):
         chart.line_chart(last_rows)
         pbar.progress((epoch + 1) / epochs)
     pbar.empty()
-    st.write(f"Training complete!\nAccuracy: {accuracy:.2f}")
+    st.write(f"Training complete!\nAccuracy: {accuracy * 100:.2f}%")
 
+    st.write("## Decision Boundary")
     plot_decision_boundary(model_3d, points_inside, points_outside)
+    st.write("## 3D Latent Space")
     plot_interactive_3d_latent_space(
         model_3d, custom_dataset.data, custom_dataset.labels
+    )
+
+    st.write(
+        """We can see that in the 3D space (if the accuracy is 100%), the data is 
+            strictly separable: the neural network is able to separate the points from 
+            inside and outside the circle linearly (i.e. we can draw a hyperplane to 
+            separate the points)."""
     )
 ''')
 
@@ -466,8 +478,11 @@ st.scatter_chart(df, x="x1", y="x2", color="label")
 
 st.write("## Neural Network")
 st.write(
-    """We will use a simple neural network with 1 hidden layer to separate the
-        points."""
+    """We will use a simple neural network with 3 hidden layer to separate the
+        points. The first hidden layer has 10 hidden units, the second hidden layer has
+        10 hidden units, and the third hidden layer has 3 hidden units. The third hidden
+        layer is the latent space of the network, and we will visualize it in 3D to see
+        how the network separates the points."""
 )
 model_3d = SimpleNN3D()
 
@@ -526,9 +541,18 @@ if st.button("Train Network"):
         chart.line_chart(last_rows)
         pbar.progress((epoch + 1) / epochs)
     pbar.empty()
-    st.write(f"Training complete!\nAccuracy: {accuracy:.2f}")
+    st.write(f"Training complete!\nAccuracy: {accuracy * 100:.2f}%")
 
+    st.write("## Decision Boundary")
     plot_decision_boundary(model_3d, points_inside, points_outside)
+    st.write("## 3D Latent Space")
     plot_interactive_3d_latent_space(
         model_3d, custom_dataset.data, custom_dataset.labels
+    )
+
+    st.write(
+        """We can see that in the 3D space (if the accuracy is 100%), the data is 
+            strictly separable: the neural network is able to separate the points from 
+            inside and outside the circle linearly (i.e. we can draw a hyperplane to 
+            separate the points)."""
     )
