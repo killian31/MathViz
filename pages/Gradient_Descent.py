@@ -11,8 +11,7 @@ from matplotlib.animation import FuncAnimation
 st.set_page_config(page_title="Gradient Descent", page_icon="📉")
 # This is automatically generated, do not modify
 if st.button("Show code"):
-    st.code(
-        '''import math as math
+    st.code('''import math as math
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -64,6 +63,30 @@ We recall the gradient descent algorithm with backtracking line search. Choose $
     - $L = 2 \\times L$
     - $\\beta_{k+1} = \\beta_k - \\frac{1}{L} \\nabla F(\\beta_k)$
 """
+)
+
+st.markdown(
+    """ <style>
+                button {
+                    background-color: #f63366;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    transition-duration: 0.4s;
+                    cursor: pointer;
+                    border-radius: 12px;
+                }
+                button:hover {
+                    background-color: white;
+                    color: black;
+                    border: 2px solid #f63366;
+                }
+            </style>""",
+    unsafe_allow_html=True,
 )
 
 
@@ -273,8 +296,7 @@ if st.button("Train and show classification animation"):
         # components.html(ani.to_jshtml(fps=10), height=800)
         st.subheader("Classification boundary learning process")
         st.image("logistic_regression.gif")
-'''
-    )
+''')
 
 
 st.title("Gradient Descent")

@@ -14,8 +14,7 @@ st.set_page_config(
 )
 # This is automatically generated, do not modify
 if st.button("Show code"):
-    st.code(
-        '''import matplotlib.pyplot as plt
+    st.code('''import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -28,6 +27,30 @@ from torch.utils.data import Dataset
 st.set_page_config(
     page_title="Neural Network Separability",
     page_icon="https://github.com/killian31/SimpleNNViz/blob/main/boundary_plot.png",
+)
+
+st.markdown(
+    """ <style>
+                button {
+                    background-color: #f63366;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    transition-duration: 0.4s;
+                    cursor: pointer;
+                    border-radius: 12px;
+                }
+                button:hover {
+                    background-color: white;
+                    color: black;
+                    border: 2px solid #f63366;
+                }
+            </style>""",
+    unsafe_allow_html=True,
 )
 
 
@@ -292,8 +315,8 @@ if st.button("Train Network"):
             inside and outside the circle linearly (i.e. we can draw a hyperplane to 
             separate the points)."""
     )
-'''
-    )
+''')
+
 
 st.markdown(
     """ <style>
