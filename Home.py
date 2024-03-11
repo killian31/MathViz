@@ -26,3 +26,5 @@ st.write("##### Statistics")
 st.write("##### Machine Learning")
 if st.button("Neural Network Separability"):
     switch_page("Neural Network Separability")
+if st.button("Gradient Descent"):
+    switch_page("Gradient Descent")
