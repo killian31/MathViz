@@ -16,6 +16,29 @@ st.markdown(
     ## **📚 Topics**
 """
 )
+st.markdown(
+    """ <style>
+                button {
+                    background-color: #f63366;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    transition-duration: 0.4s;
+                    cursor: pointer;
+                    border-radius: 12px;
+                }
+                button:hover {
+                    background-color: white;
+                    color: black;
+                    border: 2px solid #f63366;
+                }
+            </style>""",
+    unsafe_allow_html=True,
+)
 
 st.write("##### Mathematics")
 if st.button("Norm Visualizer"):

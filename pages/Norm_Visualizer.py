@@ -4,8 +4,9 @@ import streamlit as st
 
 st.set_page_config(page_title="Norm Visualizer", page_icon="♾️")
 # This is automatically generated, do not modify
-if st.button('Show code'):
-    st.code('''import matplotlib.pyplot as plt
+if st.button("Show code"):
+    st.code(
+        """import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 
@@ -63,8 +64,32 @@ ax.set_title(f"p={p}")
 st.pyplot(fig)
 
 st.button("Re-run")
-''')
+"""
+    )
 
+st.markdown(
+    """ <style>
+                button {
+                    background-color: #f63366;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    transition-duration: 0.4s;
+                    cursor: pointer;
+                    border-radius: 12px;
+                }
+                button:hover {
+                    background-color: white;
+                    color: black;
+                    border: 2px solid #f63366;
+                }
+            </style>""",
+    unsafe_allow_html=True,
+)
 
 
 # Define the norm Np function
