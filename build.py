@@ -14,16 +14,17 @@ def add_show_code_button():
                 end_index = code.find(")", st_page_index)
                 line_index = code.find("\n", end_index + 1)
                 # add the button to show the code if it's not already there
-                if 'st.button("Show code")' not in code:
+                if "st.button('Show code')" not in code:
                     code = (
                         code[:line_index]
                         + f"\n# This is automatically generated, do not modify"
                         + f"\nif st.button('Show code'):\n    st.code('''{code}''')\n"
                         + code[line_index:]
                     )
-            # write the new code to the file
-            with open(f"./pages/{file}", "w") as f:
-                f.write(code)
+                    # write the new code to the file
+                    with open(f"./pages/{file}", "w") as f:
+                        f.write(code)
+                    print(f"Added show code button to {file}")
 
 
 if __name__ == "__main__":

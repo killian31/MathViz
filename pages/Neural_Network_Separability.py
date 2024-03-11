@@ -13,9 +13,8 @@ st.set_page_config(
     page_icon="https://github.com/killian31/SimpleNNViz/blob/main/boundary_plot.png",
 )
 # This is automatically generated, do not modify
-if st.button("Show code"):
-    st.code(
-        '''import matplotlib.pyplot as plt
+if st.button('Show code'):
+    st.code('''import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -280,8 +279,8 @@ if st.button("Train Network"):
     plot_interactive_3d_latent_space(
         model_3d, custom_dataset.data, custom_dataset.labels
     )
-'''
-    )
+''')
+
 
 
 def list_of_tuples_to_numpy(lst):

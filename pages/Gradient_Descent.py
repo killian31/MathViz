@@ -5,6 +5,7 @@ import numpy as np
 import numpy.random as npr
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 from matplotlib.animation import FuncAnimation
 
 st.set_page_config(page_title="Gradient Descent", page_icon="📉")
@@ -17,6 +18,7 @@ import numpy as np
 import numpy.random as npr
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 from matplotlib.animation import FuncAnimation
 
 st.set_page_config(page_title="Gradient Descent", page_icon="📉")
@@ -75,7 +77,6 @@ def generate_data(seed, n, p):
     y[n2:n] = 1
 
     X = npr.normal(0, 1, (n, p + 1))
-    print(X.shape)
     X[n2:n, :] = X[n2:n, :] + 3
     X[n2:n, 0] = X[n2:n, 0] + 2
     X[0:n2, :] = X[0:n2, :] + 1
@@ -157,6 +158,7 @@ def logisticGrad(X, y, beta):
 
 
 def gradientDescentLogistic(X, y, betaZero, L0, max_iters):
+    st.subheader("Loss vs iterations")
     beta = betaZero.copy()
     loss_history = []
     grad_norm_squared_history = []
@@ -192,19 +194,19 @@ def gradientDescentLogisticWithAnimation(X, y, betaZero, L0, max_iters):
     beta = betaZero.copy()
     fig, ax = plt.subplots()
 
-    # Set the axis limits to freeze them
     ax.set_xlim(np.min(X[:, 0]), np.max(X[:, 0]))
     ax.set_ylim(np.min(X[:, 1]), np.max(X[:, 1]))
 
-    # Plot the initial scatter points
     plotInitialScatter(ax, X, y)
 
-    # Plot an initial decision boundary
-    (line,) = ax.plot([], [], c="black")  # Initialize an empty line
+    (line,) = ax.plot([], [], c="black")
 
-    # This function will be called for each frame of the animation
+    pbar = st.progress(0)
+
     def update(frame):
         nonlocal beta
+        nonlocal pbar
+        pbar.progress(frame / max_iters)
         L = L0
         gradient = logisticGrad(X, y, beta)
         loss_current = logisticLoss(X, y, beta)
@@ -221,9 +223,12 @@ def gradientDescentLogisticWithAnimation(X, y, betaZero, L0, max_iters):
         beta = beta_new
         updateDecisionBoundary(ax, beta, line, X)
 
-    animation = FuncAnimation(fig, update, frames=range(max_iters), repeat=False)
-    animation.save("logistic_regression.gif", writer="pillow", fps=10)
-    return beta
+    with st.spinner("Training..."):
+        animation = FuncAnimation(
+            fig, update, frames=range(max_iters), repeat=False, blit=False
+        )
+        animation.save("logistic_regression.gif", writer="pillow", fps=10)
+    return beta, animation
 
 
 pdim = 2
@@ -252,18 +257,21 @@ initial_learning_rate = st.selectbox(
     "Initial learning rate", [0.1, 0.01, 0.001, 0.0001], index=2
 )
 initial_learning_rate = float(initial_learning_rate)
-max_iters = st.slider("Maximum number of iterations", 1, 2000, 1)
+max_iters = st.slider("Maximum number of iterations", 1, 2000, 100)
 
-if st.button("Train and show loss visualization"):
+if st.button("Train and show live loss visualization"):
     beta, loss_history, grad_norm_squared_history = gradientDescentLogistic(
         X, y, betaZero, initial_learning_rate, max_iters
     )
 
 if st.button("Train and show classification animation"):
-    beta = gradientDescentLogisticWithAnimation(
+    beta, ani = gradientDescentLogisticWithAnimation(
         X, y, betaZero, initial_learning_rate, max_iters
     )
-    st.image("logistic_regression.gif")
+    with st.spinner("Rendering animation..."):
+        # components.html(ani.to_jshtml(fps=10), height=800)
+        st.subheader("Classification boundary learning process")
+        st.image("logistic_regression.gif")
 ''')
 
 
@@ -321,7 +329,6 @@ def generate_data(seed, n, p):
     y[n2:n] = 1
 
     X = npr.normal(0, 1, (n, p + 1))
-    print(X.shape)
     X[n2:n, :] = X[n2:n, :] + 3
     X[n2:n, 0] = X[n2:n, 0] + 2
     X[0:n2, :] = X[0:n2, :] + 1
@@ -403,6 +410,7 @@ def logisticGrad(X, y, beta):
 
 
 def gradientDescentLogistic(X, y, betaZero, L0, max_iters):
+    st.subheader("Loss vs iterations")
     beta = betaZero.copy()
     loss_history = []
     grad_norm_squared_history = []
@@ -438,19 +446,19 @@ def gradientDescentLogisticWithAnimation(X, y, betaZero, L0, max_iters):
     beta = betaZero.copy()
     fig, ax = plt.subplots()
 
-    # Set the axis limits to freeze them
     ax.set_xlim(np.min(X[:, 0]), np.max(X[:, 0]))
     ax.set_ylim(np.min(X[:, 1]), np.max(X[:, 1]))
 
-    # Plot the initial scatter points
     plotInitialScatter(ax, X, y)
 
-    # Plot an initial decision boundary
-    (line,) = ax.plot([], [], c="black")  # Initialize an empty line
+    (line,) = ax.plot([], [], c="black")
 
-    # This function will be called for each frame of the animation
+    pbar = st.progress(0)
+
     def update(frame):
         nonlocal beta
+        nonlocal pbar
+        pbar.progress(frame / max_iters)
         L = L0
         gradient = logisticGrad(X, y, beta)
         loss_current = logisticLoss(X, y, beta)
@@ -467,9 +475,12 @@ def gradientDescentLogisticWithAnimation(X, y, betaZero, L0, max_iters):
         beta = beta_new
         updateDecisionBoundary(ax, beta, line, X)
 
-    animation = FuncAnimation(fig, update, frames=range(max_iters), repeat=False)
-    animation.save("logistic_regression.gif", writer="pillow", fps=10)
-    return beta
+    with st.spinner("Training..."):
+        animation = FuncAnimation(
+            fig, update, frames=range(max_iters), repeat=False, blit=False
+        )
+        animation.save("logistic_regression.gif", writer="pillow", fps=10)
+    return beta, animation
 
 
 pdim = 2
@@ -498,15 +509,18 @@ initial_learning_rate = st.selectbox(
     "Initial learning rate", [0.1, 0.01, 0.001, 0.0001], index=2
 )
 initial_learning_rate = float(initial_learning_rate)
-max_iters = st.slider("Maximum number of iterations", 1, 2000, 1)
+max_iters = st.slider("Maximum number of iterations", 1, 2000, 100)
 
-if st.button("Train and show loss visualization"):
+if st.button("Train and show live loss visualization"):
     beta, loss_history, grad_norm_squared_history = gradientDescentLogistic(
         X, y, betaZero, initial_learning_rate, max_iters
     )
 
 if st.button("Train and show classification animation"):
-    beta = gradientDescentLogisticWithAnimation(
+    beta, ani = gradientDescentLogisticWithAnimation(
         X, y, betaZero, initial_learning_rate, max_iters
     )
-    st.image("logistic_regression.gif")
+    with st.spinner("Rendering animation..."):
+        # components.html(ani.to_jshtml(fps=10), height=800)
+        st.subheader("Classification boundary learning process")
+        st.image("logistic_regression.gif")

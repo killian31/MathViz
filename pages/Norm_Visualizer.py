@@ -4,9 +4,8 @@ import streamlit as st
 
 st.set_page_config(page_title="Norm Visualizer", page_icon="♾️")
 # This is automatically generated, do not modify
-if st.button("Show code"):
-    st.code(
-        """import matplotlib.pyplot as plt
+if st.button('Show code'):
+    st.code('''import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 
@@ -64,8 +63,8 @@ ax.set_title(f"p={p}")
 st.pyplot(fig)
 
 st.button("Re-run")
-"""
-    )
+''')
+
 
 
 # Define the norm Np function
