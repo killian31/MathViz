@@ -29,7 +29,11 @@ st.set_page_config(page_title="Your Page Title")
 Then, in the `Home.py` file, add this below the right section:
 
 ```python
-<section>_menu.page_link("pages/Your_Page_Title.py", label="Your Page Title")
+<section>_menu.page_link(
+    "pages/Your_Page_Title.py",
+    label="Your Page Title",
+    use_container_width=True
+)
 ```
 
 Paste the following piece of code to apply the styling for buttons:
