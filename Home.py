@@ -27,7 +27,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }
@@ -40,14 +40,33 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.write("##### Mathematics")
-if st.button("Norm Visualizer"):
-    switch_page("Norm Visualizer")
-if st.button("Parking Problem Solver (MDP)"):
-    switch_page("Parking Problem Solver")
-st.write("##### Statistics")
-st.write("##### Machine Learning")
-if st.button("Neural Network Separability"):
-    switch_page("Neural Network Separability")
-if st.button("Gradient Descent"):
-    switch_page("Gradient Descent")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    math_menu = st.popover("Mathematics")
+    math_menu.page_link(
+        "pages/Norm_Visualizer.py", label="Norm Visualizer", use_container_width=True
+    )
+    math_menu.page_link(
+        "pages/Parking_Problem_Solver.py",
+        label="Parking Problem Solver (MDP)",
+        use_container_width=True,
+    )
+
+with col2:
+    stats_menu = st.popover("Statistics (Coming Soon)")
+
+with col3:
+    ml_menu = st.popover("Machine Learning")
+    ml_menu.page_link(
+        "pages/Neural_Network_Separability.py",
+        label="Neural Network Separability",
+        use_container_width=True,
+    )
+    ml_menu.page_link(
+        "pages/Gradient_Descent.py", label="Gradient Descent", use_container_width=True
+    )
+
+with col4:
+    algo_menu = st.popover("Algorithms (Coming Soon)")

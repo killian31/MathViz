@@ -14,7 +14,8 @@ st.set_page_config(
 )
 # This is automatically generated, do not modify
 if st.button("Show code"):
-    st.code('''import matplotlib.pyplot as plt
+    st.code(
+        '''import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -40,7 +41,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }
@@ -315,7 +316,8 @@ if st.button("Train Network"):
             inside and outside the circle linearly (i.e. we can draw a hyperplane to 
             separate the points)."""
     )
-''')
+'''
+    )
 
 
 st.markdown(
@@ -329,7 +331,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }

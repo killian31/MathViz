@@ -7,7 +7,8 @@ import streamlit as st
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 # This is automatically generated, do not modify
 if st.button("Show code"):
-    st.code('''import random
+    st.code(
+        '''import random
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -102,7 +103,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }
@@ -245,7 +246,8 @@ if st.button("Solve Parking Problem"):
         N, cost_of_continuing, p_start, p_end, reward_func
     )
     plot_parking_lot(st.session_state.parking_lot, policy)
-''')
+'''
+    )
 
 
 problem_explanation = """
@@ -335,7 +337,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }
