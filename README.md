@@ -25,11 +25,39 @@ To add your app, add your file app in the folder `pages/`, named like `pages/You
 ```python
 st.set_page_config(page_title="Your Page Title")
 ```
+
 Then, in the `Home.py` file, add this below the right section:
 
 ```python
-if st.button("Your Page Title"):
-    switch_page("Your Page Title")
+<section>_menu.page_link("pages/Your_Page_Title.py", label="Your Page Title")
+```
+
+Paste the following piece of code to apply the styling for buttons:
+
+```python
+st.markdown(
+    """ <style>
+                button {
+                    background-color: #f63366;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    transition-duration: 0.2s;
+                    cursor: pointer;
+                    border-radius: 12px;
+                }
+                button:hover {
+                    background-color: white;
+                    color: black;
+                    border: 2px solid #f63366;
+                }
+            </style>""",
+    unsafe_allow_html=True,
+)
 ```
 
 Finally, you can run `python3 build.py` to add the "Show code" button to your page.

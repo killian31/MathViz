@@ -46,12 +46,12 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     math_menu = st.popover("Mathematics")
     math_menu.page_link(
-        "pages/Norm_Visualizer.py", label="Norm Visualizer", use_container_width=True
+        "pages/Norm_Visualizer.py", label="Norm Visualizer", use_container_width=False
     )
     math_menu.page_link(
         "pages/Parking_Problem_Solver.py",
         label="Parking Problem Solver (MDP)",
-        use_container_width=True,
+        use_container_width=False,
     )
 
 with col2:
@@ -62,10 +62,10 @@ with col3:
     ml_menu.page_link(
         "pages/Neural_Network_Separability.py",
         label="Neural Network Separability",
-        use_container_width=True,
+        use_container_width=False,
     )
     ml_menu.page_link(
-        "pages/Gradient_Descent.py", label="Gradient Descent", use_container_width=True
+        "pages/Gradient_Descent.py", label="Gradient Descent", use_container_width=False
     )
 
 with col4:
