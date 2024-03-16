@@ -23,7 +23,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }
@@ -103,7 +103,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }

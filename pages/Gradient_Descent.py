@@ -11,7 +11,8 @@ from matplotlib.animation import FuncAnimation
 st.set_page_config(page_title="Gradient Descent", page_icon="📉")
 # This is automatically generated, do not modify
 if st.button("Show code"):
-    st.code('''import math as math
+    st.code(
+        '''import math as math
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -76,7 +77,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }
@@ -296,7 +297,8 @@ if st.button("Train and show classification animation"):
         # components.html(ani.to_jshtml(fps=10), height=800)
         st.subheader("Classification boundary learning process")
         st.image("logistic_regression.gif")
-''')
+'''
+    )
 
 
 st.title("Gradient Descent")
@@ -352,7 +354,7 @@ st.markdown(
                     display: inline-block;
                     font-size: 16px;
                     margin: 4px 2px;
-                    transition-duration: 0.4s;
+                    transition-duration: 0.2s;
                     cursor: pointer;
                     border-radius: 12px;
                 }
