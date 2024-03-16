@@ -26,6 +26,8 @@ To add your app, add your file app in the folder `pages/`, named like `pages/You
 st.set_page_config(page_title="Your Page Title")
 ```
 
+Before continuing, please make sure you have added the python libraries your app uses to the `requirements.txt` file, otherwise your app will not be able to run on the cloud.
+
 Then, in the `Home.py` file, add this below the right section:
 
 ```python
