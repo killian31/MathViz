@@ -7,8 +7,7 @@ import streamlit as st
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 # This is automatically generated, do not modify
 if st.button("Show code"):
-    st.code(
-        '''import random
+    st.code('''import random
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,6 +15,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Parking Problem Solver", page_icon="🚗")
 
+
 problem_explanation = """
 
 In the context of Markov Decision Processes, the parking problem can be described as follows:
@@ -174,6 +174,51 @@ def backward_induction(N, c, p_start=0.9, p_end=0.1, reward_func="i"):
     return V_free[:-1], policy
 
 
+def value_iteration(
+    N, c, p_start=0.9, p_end=0.1, reward_func="i", threshold=1e-4, max_iterations=1000
+):
+    V_free = np.zeros(N + 1)
+    V_taken = np.zeros(N + 1)
+    policy = [None] * N
+
+    V_free[N] = N
+    V_taken[N] = 0
+
+    for _ in range(max_iterations):
+        delta = 0
+        for i in range(N - 1, -1, -1):
+            prob_free_next = rho(i + 1, N, p_start, p_end)
+
+            V_continue = (
+                -c
+                + prob_free_next * V_free[i + 1]
+                + (1 - prob_free_next) * V_taken[i + 1]
+            )
+            if reward_func == "i":
+                V_park = i + 1
+            elif reward_func == "2i":
+                V_park = 2 * (i + 1)
+            elif reward_func == "i^2":
+                V_park = (i + 1) ** 2
+            else:
+                raise ValueError("Invalid reward function")
+
+            V_free[i] = max(V_park, V_continue)
+            policy[i] = 1 if V_park >= V_continue else 0
+
+            V_taken[i] = (
+                -c
+                + prob_free_next * V_free[i + 1]
+                + (1 - prob_free_next) * V_taken[i + 1]
+            )
+            delta = max(delta, abs(V_free[i] - V_free[i - 1]))
+
+        if delta < threshold:
+            break
+
+    return V_free[:-1], policy
+
+
 def plot_parking_lot(parking_lot, policy):
     fig, ax = plt.subplots(figsize=(10, 2))
     N = len(parking_lot)
@@ -238,16 +283,25 @@ if st.button("Generate Random Parking Lot"):
     ax.set_title("Parking Lot Status")
     st.pyplot(fig)
 
+algorithm = st.selectbox("Algorithm", ["Backward Induction", "Value Iteration"])
+
 if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
         st.error("Please generate a parking lot first.")
         st.stop()
-    values, policy = backward_induction(
-        N, cost_of_continuing, p_start, p_end, reward_func
-    )
+    if algorithm == "Backward Induction":
+        values, policy = backward_induction(
+            N, cost_of_continuing, p_start, p_end, reward_func
+        )
+    elif algorithm == "Value Iteration":
+        values, policy = value_iteration(
+            N, cost_of_continuing, p_start, p_end, reward_func
+        )
+    else:
+        raise ValueError("Invalid algorithm")
     plot_parking_lot(st.session_state.parking_lot, policy)
-'''
-    )
+''')
+
 
 
 problem_explanation = """
@@ -408,6 +462,51 @@ def backward_induction(N, c, p_start=0.9, p_end=0.1, reward_func="i"):
     return V_free[:-1], policy
 
 
+def value_iteration(
+    N, c, p_start=0.9, p_end=0.1, reward_func="i", threshold=1e-4, max_iterations=1000
+):
+    V_free = np.zeros(N + 1)
+    V_taken = np.zeros(N + 1)
+    policy = [None] * N
+
+    V_free[N] = N
+    V_taken[N] = 0
+
+    for _ in range(max_iterations):
+        delta = 0
+        for i in range(N - 1, -1, -1):
+            prob_free_next = rho(i + 1, N, p_start, p_end)
+
+            V_continue = (
+                -c
+                + prob_free_next * V_free[i + 1]
+                + (1 - prob_free_next) * V_taken[i + 1]
+            )
+            if reward_func == "i":
+                V_park = i + 1
+            elif reward_func == "2i":
+                V_park = 2 * (i + 1)
+            elif reward_func == "i^2":
+                V_park = (i + 1) ** 2
+            else:
+                raise ValueError("Invalid reward function")
+
+            V_free[i] = max(V_park, V_continue)
+            policy[i] = 1 if V_park >= V_continue else 0
+
+            V_taken[i] = (
+                -c
+                + prob_free_next * V_free[i + 1]
+                + (1 - prob_free_next) * V_taken[i + 1]
+            )
+            delta = max(delta, abs(V_free[i] - V_free[i - 1]))
+
+        if delta < threshold:
+            break
+
+    return V_free[:-1], policy
+
+
 def plot_parking_lot(parking_lot, policy):
     fig, ax = plt.subplots(figsize=(10, 2))
     N = len(parking_lot)
@@ -472,11 +571,20 @@ if st.button("Generate Random Parking Lot"):
     ax.set_title("Parking Lot Status")
     st.pyplot(fig)
 
+algorithm = st.selectbox("Algorithm", ["Backward Induction", "Value Iteration"])
+
 if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
         st.error("Please generate a parking lot first.")
         st.stop()
-    values, policy = backward_induction(
-        N, cost_of_continuing, p_start, p_end, reward_func
-    )
+    if algorithm == "Backward Induction":
+        values, policy = backward_induction(
+            N, cost_of_continuing, p_start, p_end, reward_func
+        )
+    elif algorithm == "Value Iteration":
+        values, policy = value_iteration(
+            N, cost_of_continuing, p_start, p_end, reward_func
+        )
+    else:
+        raise ValueError("Invalid algorithm")
     plot_parking_lot(st.session_state.parking_lot, policy)
