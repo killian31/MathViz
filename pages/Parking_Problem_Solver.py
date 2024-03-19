@@ -219,6 +219,65 @@ def value_iteration(
     return V_free[:-1], policy
 
 
+def policy_evaluation(
+    policy, N, c, p_start=0.9, p_end=0.1, reward_func="i", threshold=1e-4
+):
+    V = np.zeros(N + 1)  # Initialize the value function
+    while True:
+        delta = 0
+        for i in range(1, N + 1):
+            v = V[i]
+            prob_free_next = rho(i, N, p_start, p_end)
+            if policy[i - 1] == 0:  # If the policy says to continue
+                V[i] = (
+                    -c + prob_free_next * V[min(i + 1, N)] + (1 - prob_free_next) * V[i]
+                )
+            else:  # If the policy says to park
+                if reward_func == "i":
+                    V[i] = i
+                elif reward_func == "2i":
+                    V[i] = 2 * i
+                elif reward_func == "i^2":
+                    V[i] = i**2
+            delta = max(delta, abs(v - V[i]))
+        if delta < threshold:
+            break
+    return V
+
+
+def policy_improvement(V, N, c, p_start=0.9, p_end=0.1, reward_func="i"):
+    policy = [None] * N
+    for i in range(1, N + 1):
+        prob_free_next = rho(i, N, p_start, p_end)
+        V_continue = (
+            -c + prob_free_next * V[min(i + 1, N)] + (1 - prob_free_next) * V[i]
+        )
+        if reward_func == "i":
+            V_park = i
+        elif reward_func == "2i":
+            V_park = 2 * i
+        elif reward_func == "i^2":
+            V_park = i**2
+        else:
+            raise ValueError("Invalid reward function")
+        if V_park >= V_continue:
+            policy[i - 1] = 1
+        else:
+            policy[i - 1] = 0
+    return policy
+
+
+def policy_iteration(N, c, p_start=0.9, p_end=0.1, reward_func="i", threshold=1e-4):
+    policy = [1] * N  # Initialize the policy to park everywhere
+    while True:
+        V = policy_evaluation(policy, N, c, p_start, p_end, reward_func, threshold)
+        new_policy = policy_improvement(V, N, c, p_start, p_end, reward_func)
+        if new_policy == policy:
+            break
+        policy = new_policy
+    return V[1:], policy
+
+
 def plot_parking_lot(parking_lot, policy):
     fig, ax = plt.subplots(figsize=(10, 2))
     N = len(parking_lot)
@@ -283,7 +342,9 @@ if st.button("Generate Random Parking Lot"):
     ax.set_title("Parking Lot Status")
     st.pyplot(fig)
 
-algorithm = st.selectbox("Algorithm", ["Backward Induction", "Value Iteration"])
+algorithm = st.selectbox(
+    "Algorithm", ["Backward Induction", "Value Iteration", "Policy Iteration"]
+)
 
 if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
@@ -295,6 +356,10 @@ if st.button("Solve Parking Problem"):
         )
     elif algorithm == "Value Iteration":
         values, policy = value_iteration(
+            N, cost_of_continuing, p_start, p_end, reward_func
+        )
+    elif algorithm == "Policy Iteration":
+        values, policy = policy_iteration(
             N, cost_of_continuing, p_start, p_end, reward_func
         )
     else:
@@ -507,6 +572,65 @@ def value_iteration(
     return V_free[:-1], policy
 
 
+def policy_evaluation(
+    policy, N, c, p_start=0.9, p_end=0.1, reward_func="i", threshold=1e-4
+):
+    V = np.zeros(N + 1)  # Initialize the value function
+    while True:
+        delta = 0
+        for i in range(1, N + 1):
+            v = V[i]
+            prob_free_next = rho(i, N, p_start, p_end)
+            if policy[i - 1] == 0:  # If the policy says to continue
+                V[i] = (
+                    -c + prob_free_next * V[min(i + 1, N)] + (1 - prob_free_next) * V[i]
+                )
+            else:  # If the policy says to park
+                if reward_func == "i":
+                    V[i] = i
+                elif reward_func == "2i":
+                    V[i] = 2 * i
+                elif reward_func == "i^2":
+                    V[i] = i**2
+            delta = max(delta, abs(v - V[i]))
+        if delta < threshold:
+            break
+    return V
+
+
+def policy_improvement(V, N, c, p_start=0.9, p_end=0.1, reward_func="i"):
+    policy = [None] * N
+    for i in range(1, N + 1):
+        prob_free_next = rho(i, N, p_start, p_end)
+        V_continue = (
+            -c + prob_free_next * V[min(i + 1, N)] + (1 - prob_free_next) * V[i]
+        )
+        if reward_func == "i":
+            V_park = i
+        elif reward_func == "2i":
+            V_park = 2 * i
+        elif reward_func == "i^2":
+            V_park = i**2
+        else:
+            raise ValueError("Invalid reward function")
+        if V_park >= V_continue:
+            policy[i - 1] = 1
+        else:
+            policy[i - 1] = 0
+    return policy
+
+
+def policy_iteration(N, c, p_start=0.9, p_end=0.1, reward_func="i", threshold=1e-4):
+    policy = [1] * N  # Initialize the policy to park everywhere
+    while True:
+        V = policy_evaluation(policy, N, c, p_start, p_end, reward_func, threshold)
+        new_policy = policy_improvement(V, N, c, p_start, p_end, reward_func)
+        if new_policy == policy:
+            break
+        policy = new_policy
+    return V[1:], policy
+
+
 def plot_parking_lot(parking_lot, policy):
     fig, ax = plt.subplots(figsize=(10, 2))
     N = len(parking_lot)
@@ -571,7 +695,9 @@ if st.button("Generate Random Parking Lot"):
     ax.set_title("Parking Lot Status")
     st.pyplot(fig)
 
-algorithm = st.selectbox("Algorithm", ["Backward Induction", "Value Iteration"])
+algorithm = st.selectbox(
+    "Algorithm", ["Backward Induction", "Value Iteration", "Policy Iteration"]
+)
 
 if st.button("Solve Parking Problem"):
     if "parking_lot" not in st.session_state:
@@ -583,6 +709,10 @@ if st.button("Solve Parking Problem"):
         )
     elif algorithm == "Value Iteration":
         values, policy = value_iteration(
+            N, cost_of_continuing, p_start, p_end, reward_func
+        )
+    elif algorithm == "Policy Iteration":
+        values, policy = policy_iteration(
             N, cost_of_continuing, p_start, p_end, reward_func
         )
     else:
